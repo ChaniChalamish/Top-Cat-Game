@@ -20,7 +20,7 @@ const users = [
 
 export async function seedUsers() {
     if (!pool) {
-        console.error("❌ Pool not initialized. Call initDb() first!");
+        console.error(" Pool not initialized. Call initDb() first!");
         return;
     }
 
@@ -30,11 +30,11 @@ export async function seedUsers() {
                 "INSERT INTO users (name, image, score) VALUES ($1, $2, $3)",
                 [user.name, user.image, user.score]
             );
-            console.log(`✅ Added user: ${user.name}`);
+            console.log(` Added user: ${user.name}`);
         } catch (err) {
-            console.error(`❌ Error adding user ${user.name}:`, err.message);
+            console.error(` Error adding user ${user.name}:`, err.message);
         }
     }
 
-    console.log("🎉 All users added!");
+    console.log(" All users added!");
 }
