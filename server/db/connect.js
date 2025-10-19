@@ -5,9 +5,8 @@ export let pool;
 
 export async function initDb() {
   const adapter = db.adapters.createPg();
-  pool = new adapter.Pool(); // עובד כמו pg.Pool רגיל
+  pool = new adapter.Pool();
 
-  // צור את טבלת המשתמשים
   await pool.query(`
     CREATE TABLE users (
       id SERIAL PRIMARY KEY,
@@ -17,6 +16,6 @@ export async function initDb() {
     );
   `);
 
-  console.log("✅ In-memory PostgreSQL started");
+  console.log(" In-memory PostgreSQL started");
 
 }
