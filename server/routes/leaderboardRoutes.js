@@ -2,7 +2,6 @@ import express from "express";
 import { pool } from "../db/connect.js";
 const router = express.Router();
 
-// ➕ Add user
 router.post("/add", async (req, res) => {
     try {
         const { name, image, score } = req.body;
@@ -24,7 +23,6 @@ router.post("/add", async (req, res) => {
 });
 
 
-// 🔼 Update score
 router.put("/update/:id", async (req, res) => {
     try {
         const { score } = req.body;
@@ -38,7 +36,6 @@ router.put("/update/:id", async (req, res) => {
     }
 });
 
-// 📋 Get all users
 router.get("/", async (req, res) => {
     try {
         console.log("Fetching all users from the database");
@@ -49,7 +46,6 @@ router.get("/", async (req, res) => {
     }
 });
 
-// 🏆 Get top N users
 router.get("/top/:n", async (req, res) => {
     try {
         const n = parseInt(req.params.n);
@@ -63,7 +59,6 @@ router.get("/top/:n", async (req, res) => {
     }
 });
 
-// 👤 Get user rank and neighbors
 router.get("/rank/:id", async (req, res) => {
     try {
         const userResult = await pool.query("SELECT * FROM users WHERE id = $1", [req.params.id]);
