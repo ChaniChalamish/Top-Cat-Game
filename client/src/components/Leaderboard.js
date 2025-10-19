@@ -1,71 +1,85 @@
-// client/src/components/Leaderboard.js
 import React, { useEffect, useState } from "react";
-import { getTopUsers } from "../api";
-import "../App.css"; // כל הסטיילינג בקובץ CSS
+import "../App.css";
 
-export default function Leaderboard() {
-    const [users, setUsers] = useState([]);
+const Leaderboard = () => {
+    const [players, setPlayers] = useState([]);
+    const [rewards, setRewards] = useState([]);
 
     useEffect(() => {
-        getTopUsers(10)
-            .then((res) => setUsers(res.data))
-            .catch((err) => console.error(err));
+        fetch("http://localhost:5000/api/leaderboard/top/10")
+            .then((res) => res.json())
+            .then((data) => {
+                setPlayers(data || []);
+                setRewards(data.score || []);
+            })
+            .catch((err) => console.error("Error loading leaderboard:", err));
     }, []);
 
-    if (!Array.isArray(users) || users.length === 0) {
-        return <p className="no-users">No users yet</p>;
-    }
-
-    const top3 = users.slice(0, 3);
-    const rest = users.slice(3);
+    const topThree = players.slice(0, 3);
+    const others = players.slice(3);
 
     return (
         <div className="leaderboard-container">
-            <h2 className="leaderboard-title">🏆 Leaderboard</h2>
+            <h2 className="leaderboard-title">🏆 Top Cats!</h2>
 
-            {/* Top 3 */}
-            <div className="top3-container">
-                {top3.map((u, i) => (
-                    <div key={u.id} className={`top-user top-user-${i + 1}`}>
-                        <div className={`top-user-image top-user-image-${i + 1}`}>
-                            <img
-                                src={u.image || "https://via.placeholder.com/80"}
-                                alt={u.name}
-                            />
-                        </div>
-                        <div className="top-user-name">{u.name}</div>
-                        <div className="top-user-score">{u.score} pts</div>
+            {/* Rewards section */}
+            <div className="leaderboard-rewards">
+                {rewards.map((r, i) => (
+                    <div
+                        key={i}
+                        className={`reward-box ${i === 0 ? "bronze" : i === 1 ? "silver" : "gold"
+                            }`}
+                    >
+                        <h4>{r.title}</h4>
+                        <p>💎 {r.gems}</p>
+                        <p>🪙 {r.coins}</p>
                     </div>
                 ))}
             </div>
 
-            {/* Rest of the users */}
-            <table className="users-table">
-                <thead>
-                    <tr>
-                        <th>Position</th>
-                        <th>Image</th>
-                        <th>Name</th>
-                        <th>Score</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {rest.map((u, i) => (
-                        <tr key={u.id} className="user-row">
-                            <td>{i + 4}</td>
-                            <td>
-                                <img
-                                    src={u.image || "https://via.placeholder.com/40"}
-                                    alt={u.name}
-                                    className="user-image"
-                                />
-                            </td>
-                            <td>{u.name}</td>
-                            <td>{u.score}</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+            {/* Top 3 Section */}
+            <div className="top-three">
+                {topThree.map((p, index) => (
+                    <div
+                        key={p.id || index}
+                        className={`top-player ${index === 0
+                                ? "first"
+                                : index === 1
+                                    ? "second"
+                                    : "third"
+                            }`}
+                    >
+                        <div className="crown">
+                            {index === 0 ? "👑" : index === 1 ? "🥈" : "🥉"}
+                        </div>
+                        <img src={p.image} alt={p.name} className="top-img" />
+                        <div className="top-name">{p.name}</div>
+                        <div className="top-score">💎 {p.score}</div>
+                    </div>
+                ))}
+            </div>
+
+            {/* Rest of the leaderboard */}
+            <div className="leaderboard-list">
+                <div className="leaderboard-header">
+                    <span>#</span>
+                    <span>Player</span>
+                    <span>Score</span>
+                </div>
+
+                {others.map((p, index) => (
+                    <div key={p.id || index} className="leaderboard-item">
+                        <span className="rank">{index + 4}</span>
+                        <div className="player-info">
+                            <img src={p.image} alt={p.name} className="player-img" />
+                            <span className="player-name">{p.name}</span>
+                        </div>
+                        <span className="player-score">💎 {p.score}</span>
+                    </div>
+                ))}
+            </div>
         </div>
     );
-}
+};
+
+export default Leaderboard;
