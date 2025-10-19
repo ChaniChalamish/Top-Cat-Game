@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
 import "../App.css";
+import getTopUsers from "../api";
+
 
 const Leaderboard = () => {
     const [players, setPlayers] = useState([]);
     const [rewards, setRewards] = useState([]);
 
     useEffect(() => {
-        fetch("http://localhost:5000/api/leaderboard/top/10")
-            .then((res) => res.json())
+getTopUsers(10)
+    .then((res) => res.json())
             .then((data) => {
                 setPlayers(data || []);
                 setRewards(data.score || []);
@@ -22,7 +24,6 @@ const Leaderboard = () => {
         <div className="leaderboard-container">
             <h2 className="leaderboard-title">🏆 Top Cats!</h2>
 
-            {/* Rewards section */}
             <div className="leaderboard-rewards">
                 {rewards.map((r, i) => (
                     <div
@@ -37,7 +38,6 @@ const Leaderboard = () => {
                 ))}
             </div>
 
-            {/* Top 3 Section */}
             <div className="top-three">
                 {topThree.map((p, index) => (
                     <div
