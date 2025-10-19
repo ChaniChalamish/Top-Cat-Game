@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "../App.css";
-import getTopUsers from "../api";
+import { getTopUsers } from "../api.js";
 
 
 const Leaderboard = () => {
@@ -8,11 +8,10 @@ const Leaderboard = () => {
     const [rewards, setRewards] = useState([]);
 
     useEffect(() => {
-getTopUsers(10)
-    .then((res) => res.json())
-            .then((data) => {
-                setPlayers(data || []);
-                setRewards(data.score || []);
+        getTopUsers(10)
+            .then((res) => {
+                setPlayers(res.data || []);
+                setRewards(res.data.score || []);
             })
             .catch((err) => console.error("Error loading leaderboard:", err));
     }, []);
@@ -43,10 +42,10 @@ getTopUsers(10)
                     <div
                         key={p.id || index}
                         className={`top-player ${index === 0
-                                ? "first"
-                                : index === 1
-                                    ? "second"
-                                    : "third"
+                            ? "first"
+                            : index === 1
+                                ? "second"
+                                : "third"
                             }`}
                     >
                         <div className="crown">
